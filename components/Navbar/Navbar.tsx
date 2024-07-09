@@ -11,7 +11,7 @@ import logo from '../../public/assets/images/logo.png';
 import HeaderCategories from './HeaderCategories';
 
 const Navbar = () => {
-  const { navbarData, isLoading, errorMessage } = useNavbar();
+  const { navbarData, isLoading, errorMessage,selectedCurrencyValue } = useNavbar();
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -104,7 +104,7 @@ const Navbar = () => {
           </div>
         </nav>
       </header>
-      <HeaderCategories navbarData={navbarData} isLoading={isLoading} errorMessage={errorMessage} />
+        <HeaderCategories navbarData={navbarData} isLoading={isLoading} errorMessage={errorMessage} selectedCurrencyValue={selectedCurrencyValue}/>
     </>
   );
 };

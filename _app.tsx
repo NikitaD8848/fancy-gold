@@ -13,6 +13,7 @@ import { getMultiCurrencyValue } from '../services/api/general_apis/default-curr
 import MultiLangApi from '../services/api/general_apis/multilanguage-api';
 import Layout from '../components/Layout';
 import '../styles/globals.scss';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const initializeStore = (dispatch: Dispatch, fetchedDataFromServer: any) => {
   const getCurrentTimestamp = Date.now();
@@ -27,17 +28,19 @@ function MyApp({ Component, pageProps, fetchedDataFromServer }: AppProps & { fet
     <div>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <Layout>
-            <ToastContainer position="top-right" autoClose={8000} hideProgressBar={false} newestOnTop={false} draggable={false} closeOnClick pauseOnHover />
-            {/* Below condition is to check whether give complete access of site to guest user or user can access site only after authentication */}
-            {CONSTANTS.ALLOW_GUEST_TO_ACCESS_SITE_EVEN_WITHOUT_AUTHENTICATION ? (
-              <Component {...pageProps} />
-            ) : (
-              <ProtectedRoute>
+          <ErrorBoundary>
+            <Layout>
+              <ToastContainer position="top-right" autoClose={8000} hideProgressBar={false} newestOnTop={false} draggable={false} closeOnClick pauseOnHover />
+              {/* Below condition is to check whether give complete access of site to guest user or user can access site only after authentication */}
+              {CONSTANTS.ALLOW_GUEST_TO_ACCESS_SITE_EVEN_WITHOUT_AUTHENTICATION ? (
                 <Component {...pageProps} />
-              </ProtectedRoute>
-            )}
-          </Layout>
+              ) : (
+                <ProtectedRoute>
+                  <Component {...pageProps} />
+                </ProtectedRoute>
+              )}
+            </Layout>
+          </ErrorBoundary>
         </PersistGate>
       </Provider>
     </div>

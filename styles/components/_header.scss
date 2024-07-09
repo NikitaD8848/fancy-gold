@@ -16,7 +16,6 @@
   cursor: pointer;
 }
 .category-popover {
-  height: 40vh;
   max-width: 70vw;
   padding: 20px !important;
   cursor: pointer;
@@ -35,6 +34,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #000000e7;
+  text-decoration: none;
 }
 .heading-category-l3:hover {
   color: #707089;

@@ -2,8 +2,9 @@ import { useRef, useState } from 'react';
 import { Overlay, Placeholder, Popover } from 'react-bootstrap';
 import NavbarLoadingComponent from './NavbarLoadingComponent';
 import ComponentErrorHandler from '../ComponentErrorHandler';
+import Link from 'next/link';
 
-const HeaderCategories = ({ navbarData, isLoading, errorMessage }: any) => {
+const HeaderCategories = ({ navbarData, isLoading, errorMessage, selectedCurrencyValue }: any) => {
   const [showPopoverIndex, setShowPopoverIndex] = useState<number | null>(null);
   const [target, setTarget] = useState<HTMLElement | null>(null);
   const ref = useRef<HTMLDivElement | null>(null);
@@ -11,7 +12,6 @@ const HeaderCategories = ({ navbarData, isLoading, errorMessage }: any) => {
     setTarget(e.currentTarget);
     setShowPopoverIndex(index);
   };
-
   const handleMouseLeave = () => {
     setShowPopoverIndex(null);
   };
@@ -24,14 +24,24 @@ const HeaderCategories = ({ navbarData, isLoading, errorMessage }: any) => {
             const columnCount = Math.ceil(itemL2?.values?.length / 8);
             return (
               <div className="col">
-                <div className="heading-category-l2">{itemL2?.label}</div>
+                <div className="heading-category-l2">
+                  <Link href={`${itemL2?.url}?page=1&currency=${selectedCurrencyValue}`} className="label" onClick={() => setShowPopoverIndex(null)}>
+                    {itemL2?.label}
+                  </Link>
+                </div>
                 <hr className="m-1" />
                 <div className=" col-container">
                   {Array.from({ length: columnCount }, (_, columnIndex) => (
                     <div key={columnIndex} className="column">
                       {itemL2?.values?.slice(columnIndex * 8, (columnIndex + 1) * 8).map((itemL3: any, idx: number) => (
-                        <div key={idx} className="heading-category-l3 p-1">
-                          {itemL3?.label !== undefined ? itemL3?.label : `${idx}`}
+                        <div key={idx} className=" p-1">
+                          <Link
+                            href={`${itemL3?.url}?page=1&currency=${selectedCurrencyValue}`}
+                            className="heading-category-l3"
+                            onClick={() => setShowPopoverIndex(null)}
+                          >
+                            {itemL3?.label !== undefined ? itemL3?.label : `${idx}`}
+                          </Link>
                         </div>
                       ))}
                     </div>
