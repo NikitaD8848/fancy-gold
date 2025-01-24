@@ -51,11 +51,12 @@ const ProductCard = ({ data, handleShow, wishlistData, btnAction, cartData }: an
   };
   const handleRenderAddToCartBtn = () => {
     {
-      cartData?.length > 0 && cartData?.map((item: any) => {
-        if (item === data?.name) {
-          cartProducts = item;
-        }
-      })
+      cartData?.length > 0 &&
+        cartData?.map((item: any) => {
+          if (item === data?.name) {
+            cartProducts = item;
+          }
+        });
     }
     if (!cartProducts) {
       if (btnAction === 'Add') {
@@ -67,7 +68,7 @@ const ProductCard = ({ data, handleShow, wishlistData, btnAction, cartData }: an
             {btnAction}
             <IoCart className={ProductCardStyles.icon_margin} />
           </button>
-        )
+        );
       } else {
         return (
           <button
@@ -78,9 +79,8 @@ const ProductCard = ({ data, handleShow, wishlistData, btnAction, cartData }: an
           >
             {btnAction}
           </button>
-        )
+        );
       }
-
     } else {
       return (
         <button
@@ -89,9 +89,9 @@ const ProductCard = ({ data, handleShow, wishlistData, btnAction, cartData }: an
         >
           Added
         </button>
-      )
+      );
     }
-  }
+  };
   return (
     <Card className={` ${ProductCardStyles.product_card} pt-2`}>
       <div className={` ${ProductCardStyles.product_card_img} `}>
@@ -122,10 +122,20 @@ const ProductCard = ({ data, handleShow, wishlistData, btnAction, cartData }: an
 
               <Card.Text className={`my-0 py-0 ${ProductCardStyles.product_card_text} `}>Gross wt: {data.weight_per_unit}</Card.Text>
               <Card.Text className={`my-0 py-0 ${ProductCardStyles.product_card_text} `}>Size: {data.length}</Card.Text>
+              {(data?.level_2_category === 'MANGALSUTRA' ||
+                data?.level_2_category === 'IMP PREMIUM' ||
+                data?.item_group === 'STONE CHAINS') && (
+                <>
+                  <Card.Text className={`my-0 py-0 ${ProductCardStyles.product_card_text} `}>Net wt: {data?.net_weight}</Card.Text>
+                  {data?.bom_factory_code !== '' && data?.bom_factory_code !== null && (
+                    <Card.Text className={`my-0 py-0 ${ProductCardStyles.product_card_text} `}>
+                      BOM Code: {data?.bom_factory_code}
+                    </Card.Text>
+                  )}
+                </>
+              )}
             </div>
-            <div>
-              {handleRenderAddToCartBtn()}
-            </div>
+            <div>{handleRenderAddToCartBtn()}</div>
           </div>
         </div>
       </Card.Body>

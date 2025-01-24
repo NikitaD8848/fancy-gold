@@ -30,6 +30,7 @@ const Navbar = () => {
   const { cartCount, cartListingItems } = useFetchCartItems();
   const user = localStorage.getItem('user');
   const party_name = localStorage.getItem('party_name');
+  const isCatalogUser = localStorage.getItem('isCatalogUser');
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -256,11 +257,13 @@ const Navbar = () => {
                           Bulk Order
                         </NavDropdown.Item>
                       </Link>
-                      {/* <Link href="/bulk-order" passHref className="text-decoration-none">
-                        <NavDropdown.Item as="a" className={`text-decoration-none ${stylesNavbar.order_list_items} custom-dropdown-item`}>
-                          Bulk Order
-                        </NavDropdown.Item>
-                      </Link> */}
+                      {isCatalogUser === 'true' && (
+                        <Link href="/catalog" passHref className="text-decoration-none">
+                          <NavDropdown.Item as="a" className={`text-decoration-none ${stylesNavbar.order_list_items} custom-dropdown-item`}>
+                            View Catalog
+                          </NavDropdown.Item>
+                        </Link>
+                      )}
                       <Link href="#" passHref className="text-decoration-none" onClick={handleLogoutUser}>
                         <NavDropdown.Item as="a" className={`text-decoration-none ${stylesNavbar.order_list_items} custom-dropdown-item`}>
                           Sign Out
