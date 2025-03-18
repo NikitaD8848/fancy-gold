@@ -9,13 +9,17 @@ function CustomerOrderTable({
   deleteCustomMarketOrderRow,
   errorMsg,
   refCodesList,
+  handleFileUpload,
 }: any) {
   const [inputValues, setInputValues] = useState<string[]>([]);
+
   const handleInputValueChange = (value: string, index: number) => {
     const newInputValues = [...inputValues];
     newInputValues[index] = value;
     setInputValues(newInputValues);
   };
+
+  // Handle File Upload
 
   return (
     <>
@@ -49,6 +53,7 @@ function CustomerOrderTable({
                 <th>
                   Description<span className="text-danger">*</span>
                 </th>
+                <th>Image</th>
                 <th></th>
               </tr>
             </thead>
@@ -115,6 +120,10 @@ function CustomerOrderTable({
                       value={row.description}
                       onChange={(e) => handleChangeArrayCustom(e, index, 'description')}
                     />
+                  </td>
+                  <td>
+                    <input type="file" onChange={(e) => handleFileUpload(e, index)} />
+                    {/* {uploadedFiles[index] && <p className="mt-2 text-success">Uploaded: {uploadedFiles[index]?.name}</p>} */}
                   </td>
                   <td className="text-end">
                     <button className={styles.btn_delete_bulk_order} onClick={() => deleteCustomMarketOrderRow(index)}>

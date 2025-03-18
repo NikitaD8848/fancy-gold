@@ -14,6 +14,7 @@ function ARCBulkOrderMaster() {
     purityValues,
     errMsgCustomOrder,
     refCodesList,
+    handleFileUpload,
   }: any = useBulkOrder();
 
   return (
@@ -33,6 +34,7 @@ function ARCBulkOrderMaster() {
                 deleteCustomMarketOrderRow={deleteCustomMarketOrderRow}
                 errorMsg={errMsgCustomOrder}
                 refCodesList={refCodesList}
+                handleFileUpload={handleFileUpload}
               />
             </div>
           </div>
