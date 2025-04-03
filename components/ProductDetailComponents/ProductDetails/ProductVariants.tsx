@@ -22,25 +22,39 @@ const ProductVariants = ({ productDetail, variantsData, attributesData, getProdu
           });
           return {
             variant_code: variant.variant_code,
-            variant_string: Number(variantStringParts.join('-')),
+            variant_string: variantStringParts.join('-'),
           };
         })
         .sort((a: any, b: any) => a.variant_string - b.variant_string) // Sort numerically
     );
   };
 
-  const handleProductVariant = (variant_code: any) => {
-    if (query?.productId) {
-      router.push({
-        query: { ...query, productId: variant_code },
-      });
-    } else {
-      getProductDetailData(variant_code);
-    }
+  const handleProductVariant = (field_name: any, value: any) => {
+    variantsData?.map((variant: any) => {
+      if (variant[field_name] === value) {
+        if (query?.productId) {
+          router.push({
+            query: { ...query, productId: variant?.slug },
+          });
+        } else {
+          getProductDetailData(variant?.slug);
+        }
+      }
+    });
   };
   const isVariantInCart = (variant_code: any) => {
     return cartList?.length > 0 && cartList?.some((cartItem: any) => cartItem === variant_code);
   };
+  const isVariantActive = (field_name: any, value: any) => {
+    return (
+      variantsData?.length > 0 &&
+      variantsData?.some((variant: any) => {
+        const isActive = variant[field_name] === value && variant?.variant_code === productDetail?.name;
+        return isActive;
+      })
+    );
+  };
+
   useEffect(() => {
     setShowVariants(variantsData?.length > 0 || variantsData !== null ? getVariantStrings() : []);
   }, [variantsData]);
@@ -61,7 +75,7 @@ const ProductVariants = ({ productDetail, variantsData, attributesData, getProdu
           )}
         </>
       )}
-      <div className="d-flex flex-wrap mb-2">
+      {/* <div className="d-flex flex-wrap mb-2">
         {errorMessage?.length > 0 ? (
           <p className="text-danger m-0">Couldn't load Product variants. {errorMessage}</p>
         ) : (
@@ -81,6 +95,35 @@ const ProductVariants = ({ productDetail, variantsData, attributesData, getProdu
             >
               {variant.variant_string}
             </button>
+          ))
+        )}
+      </div> */}
+      <div className="mb-2">
+        {errorMessage?.length > 0 ? (
+          <p className="text-danger m-0">Couldn't load Product variants. {errorMessage}</p>
+        ) : (
+          attributesData !== null &&
+          attributesData?.length > 0 &&
+          attributesData.map((variant: any, index: number) => (
+            <>
+              <div className="fs-14">{variant?.field_name}</div>
+              {variant?.values?.length > 0 &&
+                variant?.values?.map((value: any) => (
+                  <button
+                    key={index}
+                    className={
+                      isVariantActive(variant.field_name, value)
+                        ? variantStyles.variant_btn_active
+                        : isVariantInCart(variant.variant_code)
+                          ? variantStyles.variant_btn_in_cart
+                          : variantStyles.variant_btn
+                    }
+                    onClick={(e) => handleProductVariant(variant?.field_name, value)}
+                  >
+                    {value}
+                  </button>
+                ))}
+            </>
           ))
         )}
       </div>

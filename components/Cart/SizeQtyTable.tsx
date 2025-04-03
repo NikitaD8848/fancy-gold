@@ -55,8 +55,8 @@ const SizeQtyTable = ({ data, onQtyChange, onDelete }: any) => {
               </span>
             </div>
             <div className="col-lg-3 col-3 border py-1">{item?.weight}gm</div>
-            <div className="col-lg-1 col-1 border py-1">
-              <RxCross2 onClick={() => handleDelete(index)} />
+            <div className="col-lg-1 col-1 border py-1 cursor-pointer">
+              <RxCross2 onClick={() => onDelete(data.item_code, item.size)} />
             </div>
           </div>
         ))}

@@ -10,7 +10,7 @@ const OrderReportLoadingSkeleton = ({ Title }: any) => {
           <thead>
             <tr>
               {[...Array(7)].map((_, colIndex) => (
-                <th className={styles.skeletontableHeader}></th>
+                <th key={colIndex} className={styles.skeletontableHeader}></th>
               ))}
             </tr>
           </thead>

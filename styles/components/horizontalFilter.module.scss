@@ -42,6 +42,15 @@
   background: #1a1a49;
   color: #ffd700;
 }
+.save_btn_active {
+  background: #1a1a49;
+  color: #ffd700;
+  width: 4rem;
+  padding: 0 0.5rem 0 0.5rem;
+  border: 1px solid #1a1a49;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
 .cust_name_input {
   // max-width: 10rem !important;
   height: 26px;

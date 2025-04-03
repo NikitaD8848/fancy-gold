@@ -1,15 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import useAddToCartHook from '../../../hooks/CartPageHook/useCartFunctions';
+import { CONSTANTS } from '../../../services/config/app-config';
 import { get_access_token } from '../../../store/slices/auth/token-login-slice';
 import { selectCart } from '../../../store/slices/cart-slices/cart-local-slice';
 import styles from '../../../styles/components/productCard.module.scss';
 import productDetailStyles from '../../../styles/components/productDetail.module.scss';
-import { CONSTANTS } from '../../../services/config/app-config';
-import { callGetAPI, callPostAPI } from '../../../utils/http-methods';
-import BulkDropdownInput from '../../BulkOrder/BulkDropdown';
+import { callPostAPI } from '../../../utils/http-methods';
 
 const ProductDetailInfo = ({ data, getProductDetailData }: any) => {
   const cartList = useSelector(selectCart)?.items;
@@ -37,18 +36,7 @@ const ProductDetailInfo = ({ data, getProductDetailData }: any) => {
   const [errors, setErrors] = useState<{ [key: number]: { size?: string; quantity?: string } }>({});
   const [customerError, setCustomerError] = useState('');
   const [reject, setReject] = useState(false);
-  const [cuttingTypeValues, setCuttingTypeValues] = useState([]);
-  const [seletedCuttingType, setSelectedCuttingType] = useState('');
   const inputRefs = useRef<any[]>([]);
-  const getCuttingTypeValues = async () => {
-    const url = `${CONSTANTS.API_BASE_URL}/api/resource/Cutting Type`;
-    const fetchCuttingTypeValues = await callGetAPI(url, TokenFromStore.token);
-    return fetchCuttingTypeValues;
-  };
-  const fetchCuttingTypeValues = async () => {
-    const values = await getCuttingTypeValues();
-    setCuttingTypeValues(values?.data?.data);
-  };
 
   const handleAddRow = () => {
     setSizeTable([...sizeTable, initialState]);
@@ -60,7 +48,6 @@ const ProductDetailInfo = ({ data, getProductDetailData }: any) => {
   };
   const handleKeyDown = (event: any) => {
     event.preventDefault();
-    console.log(event, 'data111');
     if (event?.key === 'Enter' || event?.keyCode === 13) {
       handleAddRow();
       setTimeout(() => {
@@ -153,6 +140,7 @@ const ProductDetailInfo = ({ data, getProductDetailData }: any) => {
     if (cust_name !== '' && cust_name !== null) {
       setCustomerError('');
       addToCartItem(addToCartParams);
+      setSizeTable([initialState]);
     } else {
       setCustomerError('Customer name is empty!');
     }
@@ -161,31 +149,32 @@ const ProductDetailInfo = ({ data, getProductDetailData }: any) => {
       remark: '',
       rejection_note: '',
     });
-    setSizeTable([initialState]);
   };
   const isVariantInCart = (variant_code: any) => {
     return cartList?.length > 0 && cartList?.some((cartItem: any) => cartItem === variant_code);
   };
-  useEffect(() => {
-    fetchCuttingTypeValues();
-  }, []);
+  console.log(data?.category_size, 'data111');
   return (
     <div className="w-100">
       <div className="py-2">
         <h6 className={`${styles.productCode} fw-bold mb-0`}>This product is available in below sizes :</h6>
         <div className="d-flex">
-          {[8, 20, 22, 24].map((size, index) => {
-            const isActive = sizeTable.some((item: any) => item?.size === size.toString());
-            return (
-              <button
-                key={index}
-                className={isActive ? productDetailStyles.size_button_active : productDetailStyles.size_button}
-                onClick={() => handleSizeButtonClick(size)}
-              >
-                {size}
-              </button>
-            );
-          })}
+          {Array.isArray(data?.category_size) &&
+            data?.category_size.length > 0 &&
+            [...data.category_size]
+              .sort((a: any, b: any) => a - b) // Adjust sorting logic as needed
+              .map((size: any, index: number) => {
+                const isActive = sizeTable.some((item: any) => item?.size === size.toString());
+                return (
+                  <button
+                    key={index}
+                    className={isActive ? productDetailStyles.size_button_active : productDetailStyles.size_button}
+                    onClick={() => handleSizeButtonClick(size)}
+                  >
+                    {size}
+                  </button>
+                );
+              })}
           <button className={`btn btn-link theme-blue ${styles.tableFontSize}`} onClick={handleAddRow}>
             Add Custom Size
           </button>
@@ -194,17 +183,16 @@ const ProductDetailInfo = ({ data, getProductDetailData }: any) => {
       <div className="mb-2">
         <div className={`row mx-1 ${styles.tableRow}`}>
           <div className="col-2 border text-center py-1">Purity</div>
-          <div className={`col-2 border text-center py-1`}>Colour</div>
-          <div className={`${data?.custom_factory === 'ARC ERP Software' ? 'col-2' : 'col-3'} border text-center py-1`}>Design Style</div>
+          <div className={`${data?.custom_factory === 'ARC ERP Software' ? 'col-2' : 'col-4'}  border text-center py-1`}>Colour</div>
           {data?.custom_factory === 'ARC ERP Software' && <div className="col-2 border text-center py-1">Weight</div>}
-          <div className={`col-2 px-0 border text-center py-1`}>Size(inch)</div>
-          <div className={`${data?.custom_factory === 'ARC ERP Software' ? 'col-1' : 'col-2'} border text-center p-0 px-1 py-1`}>Qty</div>
+          <div className={`col-3 px-0 border text-center py-1`}>Size(inch)</div>
+          <div className={`col-2 border text-center p-0 px-1 py-1`}>Qty</div>
           <div className="col border"></div>
         </div>
         {sizeTable.map((row, index) => (
           <div className="row mx-1" key={index}>
             <div className={`col-2 border text-center py-1  ${styles.tableFontSize}`}>{purity}</div>
-            <div className={`col-2 border py-1`}>
+            <div className={`${data?.custom_factory === 'ARC ERP Software' ? 'col-2' : 'col-4'} border py-1`}>
               <select
                 name="colour"
                 value={row.colour || colour}
@@ -212,29 +200,11 @@ const ProductDetailInfo = ({ data, getProductDetailData }: any) => {
                 className={`border-0 form-control p-0 text-center ${styles.tableFontSize}`}
               >
                 <option value="Yellow">Yellow</option>
-                <option value="Rose">Rose</option>
                 <option value="White">White</option>
+                <option value="Pink">Pink</option>
               </select>
             </div>
-            <div className={`${data?.custom_factory === 'ARC ERP Software' ? 'col-2 px-1' : 'col-3'} border text-center py-1 `}>
-              <select
-                name="design_style"
-                value={row.design_style}
-                onChange={(e) => handleInputChange(index, e)}
-                className={`border-0 form-control selectpicker p-0 text-center ${styles.tableFontSize}`}
-              >
-                <option value="" selected></option>
-                {cuttingTypeValues?.length > 0 && cuttingTypeValues?.map((item: any) => <option value={item?.name}>{item?.name}</option>)}
-              </select>
-              {/* <BulkDropdownInput
-                dropdownData={cuttingTypeValues?.map((item: any) => item?.name)}
-                inputValue={seletedCuttingType}
-                setInputValue={setSelectedCuttingType}
-                disabled={''}
-                name={'design_style'}
-                onChange={(e: any) => handleInputChange(index, { target: { value: e } })}
-              /> */}
-            </div>
+
             {data?.custom_factory === 'ARC ERP Software' && (
               <div className="col-2 border d-flex justify-content-center px-0 py-1 flex-column">
                 <input
@@ -246,7 +216,7 @@ const ProductDetailInfo = ({ data, getProductDetailData }: any) => {
             )}
             <div
               className={`
-                col-2 px-0 border d-flex justify-content-center py-1 flex-column`}
+                col-3 px-0 border d-flex justify-content-center py-1 flex-column`}
             >
               <input
                 type="text"
@@ -258,11 +228,7 @@ const ProductDetailInfo = ({ data, getProductDetailData }: any) => {
               />
               {errors[index]?.size && <small className="text-danger">{errors[index].size}</small>}
             </div>
-            <div
-              className={`${
-                data?.custom_factory === 'ARC ERP Software' ? 'col-1' : 'col-2'
-              } border d-flex justify-content-center p-0 px-1 py-1 flex-column`}
-            >
+            <div className={`col-2 border d-flex justify-content-center p-0 px-1 py-1 flex-column`}>
               <input
                 type="text"
                 name="quantity"

@@ -121,22 +121,24 @@ const OrderDetailCard = ({
                     {status}
                   </p>
                 </div>
-                <div className="col-3 text-center">
-                  {showButtons && status === 'pending' && (
-                    <>
-                      <div className="m-2">
-                        <button className={`${orderDetailStyles.readyToDispatch}`} onClick={() => handleReadyToDispatch(name)}>
-                          Ready to Dispatch
+                {showButtons && ['pending', 'Accepted', 'WIP', 'Pending', 'accepted'].includes(status) && (
+                  <div className="col-3 text-center">
+                    {[
+                      {
+                        label: 'Ready to Dispatch',
+                        className: orderDetailStyles.readyToDispatch,
+                        onClick: () => handleReadyToDispatch(name),
+                      },
+                      { label: 'Delete', className: orderDetailStyles.deletBtn, onClick: () => handleDeleteOrder(name) },
+                    ].map(({ label, className, onClick }) => (
+                      <div key={label} className="m-2">
+                        <button className={className} onClick={onClick}>
+                          {label}
                         </button>
                       </div>
-                      <div className="m-2">
-                        <button className={`${orderDetailStyles.deletBtn}`} onClick={() => handleDeleteOrder(name)}>
-                          Delete
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             <div className="col-5 border p-0">

@@ -1,16 +1,23 @@
-import React, { useState } from 'react';
-import Image from 'next/image';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import useOrderListHook from '../../hooks/OrderListHooks/useOrderListHook';
 import image from '../../public/assets/images/no-data.png';
-const ListingTable = dynamic(() => import('./ListingTable'));
 import ComponentErrorHandler from '../ComponentErrorHandler';
 import OrderReportLoadingSkeleton from '../OrderReport/OrderReportLoadingSkeleton';
+const ListingTable = dynamic(() => import('./ListingTable'));
 
 const OrderList = () => {
   const { orderListData, isLoading, errorMessage, handleSelectOrder, deleteBulkOrder }: any = useOrderListHook();
-
-  const headers: any = ['', 'Order Date ', 'Order Id', 'Customer Name', 'Total Ordered Weight', 'Due Date', 'Status'];
+  const headers = [
+    { field_name: '', header: '' },
+    { field_name: 'transaction_date', header: 'Order Date' },
+    { field_name: 'name', header: 'Order Id' },
+    { field_name: 'customer_name', header: 'Customer Name' },
+    { field_name: 'purity', header: 'Purity' },
+    { field_name: 'total_weight', header: 'Total Ordered Weight' },
+    { field_name: 'delivery_date', header: 'Due Date' },
+    { field_name: 'status', header: 'Status' },
+  ];
 
   const showOrderListingSection: any = () => {
     if (isLoading) {

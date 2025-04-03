@@ -63,7 +63,7 @@ const ProductCard = ({ data, handleShow, wishlistData, btnAction, cartData }: an
         return (
           <button
             className={`btn btn-outline-primary text-uppercase mb-0  ${ProductCardStyles.add_to_cart_btn} `}
-            onClick={() => handleShow(data?.name, data?.variant_of)}
+            onClick={() => handleShow(data?.slug, data?.variant_of)}
           >
             {btnAction}
             <IoCart className={ProductCardStyles.icon_margin} />
@@ -85,7 +85,7 @@ const ProductCard = ({ data, handleShow, wishlistData, btnAction, cartData }: an
       return (
         <button
           className={`btn btn-outline-primary text-uppercase mb-0  ${ProductCardStyles.addded_to_cart_btn}`}
-          onClick={() => handleShow(data?.name, data?.variant_of)}
+          onClick={() => handleShow(data?.slug, data?.variant_of)}
         >
           Added
         </button>

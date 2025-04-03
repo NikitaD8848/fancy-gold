@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { Offcanvas } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
@@ -7,12 +8,10 @@ import { CONSTANTS } from '../../../services/config/app-config';
 import { get_access_token } from '../../../store/slices/auth/token-login-slice';
 import NoDataFound from '../../NoDataFound';
 import ProductCode from '../ProductDetails/ProductCode';
-import ProductImage from '../ProductDetails/ProductImage';
 import ProductVariants from '../ProductDetails/ProductVariants';
 import DrawerSkeleton from './DrawerSkeleton';
 import ImageSkeleton from './ImageSkeleton';
 import ProductDetailInfo from './ProductDetailInfo';
-import Image from 'next/image';
 
 const ProductDetailDrawer = ({ show, handleClose, data }: any) => {
   const TokenFromStore: any = useSelector(get_access_token);
@@ -66,17 +65,16 @@ const ProductDetailDrawer = ({ show, handleClose, data }: any) => {
   };
   const onHide = () => {
     handleClose();
-    setVariantsData([]);
     setErrorMessageMsg('');
     setTimeout(() => {
-      setProductDetail([]);
-    }, 1000);
+      setProductDetail({});
+      setVariantsData([]);
+    }, 400);
   };
   const imageLoader = ({ src, width, quality }: any) => {
     return `${CONSTANTS.API_BASE_URL}${src}?w=${width}&q=${quality || 75}`;
   };
   useEffect(() => {
-    console.log('data', data);
     if (data?.productName) {
       getProductDetailData(data?.productName);
     }
@@ -86,6 +84,7 @@ const ProductDetailDrawer = ({ show, handleClose, data }: any) => {
       setVariantsData([]);
     }
   }, [data]);
+
   return (
     <Offcanvas show={show} placement="end" onHide={onHide} backdrop backdropClassName="offcanvas-backdrop">
       <Offcanvas.Header closeButton />
